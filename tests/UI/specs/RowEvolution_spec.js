@@ -48,13 +48,27 @@ describe("RowEvolution", function () {
     });
 
     it('should load multi-row evolution correctly', async function() {
-        await page.click('.rowevolution-startmulti');
+        await page.goto(viewDataTableUrl);
 
-        const row = await page.waitForSelector('tbody tr:nth-child(2)');
-        await row.hover();
+        const row1 = await page.waitForSelector('tbody tr:first-child');
+        await row1.hover();
 
-        const icon = await page.waitForSelector('tbody tr:nth-child(2) a.actionRowEvolution');
-        await icon.click();
+        const icon1 = await page.waitForSelector('tbody tr:first-child a.actionRowEvolution');
+        await icon1.click();
+
+        await page.waitForSelector('.ui-dialog');
+        await page.waitForNetworkIdle();
+
+        await page.evaluate(function() {
+            $('.rowevolution-startmulti').click();
+        });
+        await page.waitForFunction("$('.ui-dialog').length === 0");
+
+        const row2 = await page.waitForSelector('tbody tr:nth-child(2)');
+        await row2.hover();
+
+        const icon2 = await page.waitForSelector('tbody tr:nth-child(2) a.actionRowEvolution');
+        await icon2.click();
 
         await page.waitForSelector('.ui-dialog');
         await page.waitForNetworkIdle();
